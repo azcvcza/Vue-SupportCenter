@@ -2,8 +2,8 @@
 <template>
 	<main class="faq">
 		<h1>Frequently Asked Question</h1>
-		<div class="error" v-if="error">Can't load the question</div>
-		<Loading v-if="loading"/>
+		<div class="error" v-if="hasRemoteErrors">Can't load the question</div>
+		<Loading v-if="remoteDataBusy"/>
 		<section class="list">
 			<article :key="question.id" v-for="question of questionList">
 				<h2 v-html="question.title"></h2>
