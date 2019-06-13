@@ -2,8 +2,9 @@
 	<main class="faq">
 		<h1>Frequently Asked Question</h1>
 		<div class="error" v-if="error">Can't load the question</div>
+		<Loading v-if="loading" />
 		<section class="list">
-			<article :key=question.id v-for="question of questions">
+			<article :key="question.id" v-for="question of questions">
 				<h2 v-html="question.title"></h2>
 				<p v-html="question.content"></p>
 			</article>
@@ -15,22 +16,36 @@
 		data () {
 			return {
 				questions: [],
-				error: null
+				error: null,
+				loading: false
 			}
 		},
-		created () {
-			fetch('http://localhost:3000/questions')
-				.then(response => {
-				if (response.ok) {
-					return response.json()
-				} else {
-					return Promise.reject(new Error('error'))
-				}
-			}).then(result => {
-				this.questions = result
-			}).catch(e => {
-				console.log('error:', e)
-			})
+		async created () {
+    this.loading = true
+    try {
+			/*
+      this.questions = await this.$fetch('questions')
+      console.log('in faq', this.questions)
+      */
+      await fetch('http://localhost:3000/questions')
+        .then(response => {
+          if (response.ok) {
+            var result = response.json()
+            console.log('fetch success', result)
+						//	this.questions = response.json();
+            return result
+          } else {
+            return Promise.reject(new Error('error'))
+          }
+        })
+        .then(result => {
+          console.log('result:', result)
+          this.questions = result
+        })
+    } catch (e) {
+      this.error = e
 		}
+		this.loading = false
+  }
 	}
 </script>
