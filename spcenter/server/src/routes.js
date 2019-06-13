@@ -31,15 +31,16 @@ export default function(app) {
 
     app.post('/signup', async(req, res) => {
             try {
-                console.log('in sign up:', req);
                 if (req.user) {
                     throw Error('Unauthorized')
                 } else {
+                    console.log('in sign up:', req.body);
                     const newDoc = await Users.createUser({
                         username: req.body.username,
                         email: req.body.email,
                         password: req.body.password,
                     })
+                    console.log("before json writeback")
                     res.json({ status: 'ok' })
                 }
             } catch (e) {

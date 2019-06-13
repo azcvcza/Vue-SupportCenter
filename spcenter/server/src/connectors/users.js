@@ -17,27 +17,33 @@ export async function isPasswordMatching(user, password) {
 }
 
 export async function hashPassword(password) {
-    return await bcrypt.hash(password, SALT_ROUNDS)
+    console.log("in create hashPassword:", password, SALT_ROUNDS)
+    let result = await bcrypt.hash(password, SALT_ROUNDS)
+    console.log("bycript result:", result)
+    return result
 }
 
 export async function createUser({ username, email, password }) {
     console.log("in createUser,uname,email,pwd", username, email, password)
     const user = await getByUsername(username)
+    console.log("after await user:", user)
     if (user) {
         throw new Error('Duplicate username')
     } else {
+        console.log("can i get here")
         const hash = await hashPassword(password)
+        console.log("get hashpassword", hash);
         const result = await Users.insert({
             username,
             email,
             password: hash,
         })
-
+        console.log("get here in createUser:", Users, "result:", result)
         Tickets.create({ user: result }, {
             title: 'Welcome',
             description: 'Welcome to our support center!',
         })
-
+        console.log("get here in createUser after ticket")
         return result
     }
 }
